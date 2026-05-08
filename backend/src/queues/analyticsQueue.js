@@ -5,13 +5,13 @@ let analyticsQueue;
 function getAnalyticsQueue() {
   if (!analyticsQueue) {
     analyticsQueue = new Queue('analytics', {
-      connection: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-        password: process.env.REDIS_PASSWORD,
-        tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined,
-        maxRetriesPerRequest: null,
-      },
+      connection: (() => {
+        if (process.env.REDIS_URL) {
+          const u = new URL(process.env.REDIS_URL);
+          return { host: u.hostname, port: Number(u.port) || 6379, password: decodeURIComponent(u.password), tls: { rejectUnauthorized: false }, maxRetriesPerRequest: null };
+        }
+        return { host: process.env.REDIS_HOST, port: parseInt(process.env.REDIS_PORT, 10) || 6379, password: process.env.REDIS_PASSWORD, tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined, maxRetriesPerRequest: null };
+      })(),
       defaultJobOptions: {
         attempts: 3,
         backoff: { type: 'exponential', delay: 2000 },

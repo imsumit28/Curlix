@@ -4,13 +4,14 @@ const { Worker } = require('bullmq');
 const UAParser = require('ua-parser-js');
 const db = require('../db/connection');
 
-const connection = {
-  host: process.env.REDIS_HOST,
-  port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-  password: process.env.REDIS_PASSWORD,
-  tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined,
-  maxRetriesPerRequest: null,
-};
+function getConnection() {
+  if (process.env.REDIS_URL) {
+    const u = new URL(process.env.REDIS_URL);
+    return { host: u.hostname, port: Number(u.port) || 6379, password: decodeURIComponent(u.password), tls: { rejectUnauthorized: false }, maxRetriesPerRequest: null };
+  }
+  return { host: process.env.REDIS_HOST, port: parseInt(process.env.REDIS_PORT, 10) || 6379, password: process.env.REDIS_PASSWORD, tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined, maxRetriesPerRequest: null };
+}
+const connection = getConnection();
 
 const worker = new Worker(
   'analytics',

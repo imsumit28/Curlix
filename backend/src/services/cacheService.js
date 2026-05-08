@@ -4,16 +4,10 @@ let redis;
 
 function getRedisClient() {
   if (!redis) {
-    redis = new Redis({
-      host: process.env.REDIS_HOST,
-      port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-      password: process.env.REDIS_PASSWORD,
-      tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined,
-      connectTimeout: 3000,
-      commandTimeout: 4000,
-      maxRetriesPerRequest: 1,
-      lazyConnect: true,
-    });
+    const extraOpts = { connectTimeout: 3000, commandTimeout: 4000, maxRetriesPerRequest: 1, lazyConnect: true, tls: { rejectUnauthorized: false } };
+    redis = process.env.REDIS_URL
+      ? new Redis(process.env.REDIS_URL, extraOpts)
+      : new Redis({ host: process.env.REDIS_HOST, port: parseInt(process.env.REDIS_PORT, 10) || 6379, password: process.env.REDIS_PASSWORD, tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined, ...extraOpts });
 
     redis.on('error', (err) => {
       console.error('Redis error:', err.message);
