@@ -94,6 +94,7 @@ export default function HeroShortener() {
         short_url: data.short_url,
         short_code: data.short_code,
         long_url: longUrl.trim(),
+        owner_token: data.owner_token,
         ts: Date.now(),
       }, prev));
     } catch (err) {
@@ -534,6 +535,7 @@ function RecentRow({ link }) {
         </button>
         <Link
           to={`/analytics/${link.short_code}`}
+          state={{ ownerToken: link.owner_token }}
           className="flex items-center gap-1 text-[10px] font-mono text-ink-faint hover:text-brand-400 transition-colors"
         >
           <BarChartIcon />
