@@ -1,5 +1,11 @@
 {
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/analytics/:path*", "destination": "/index.html" },
+    { "source": "/:code([a-zA-Z0-9_-]{1,50})", "destination": "https://curlix-backend.onrender.com/:code" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

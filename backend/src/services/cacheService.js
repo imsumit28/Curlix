@@ -9,7 +9,9 @@ function getRedisClient() {
       port: parseInt(process.env.REDIS_PORT, 10) || 6379,
       password: process.env.REDIS_PASSWORD,
       tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
-      maxRetriesPerRequest: 3,
+      connectTimeout: 3000,
+      commandTimeout: 4000,
+      maxRetriesPerRequest: 1,
       lazyConnect: true,
     });
 
