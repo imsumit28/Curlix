@@ -32,6 +32,7 @@ async function verifyCaptcha(token) {
       });
     });
 
+    req.setTimeout(5000, () => { req.destroy(); resolve(false); });
     req.on('error', () => resolve(false));
     req.write(body);
     req.end();
