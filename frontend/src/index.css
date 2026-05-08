@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Theme variables ─────────────────────────────────── */
+:root {
+  /* Light theme (default) */
+  --surface-base: #F8F9FA;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #F1F3F5;
+  --surface-line: #E5E7EB;
+  --ink: #111111;
+  --ink-muted: #52525B;
+  --ink-dim: #71717A;
+  --ink-faint: #D1D5DB;
+  --heading-color: #09090B;
+  --connector-stroke: rgba(0, 0, 0, 0.12);
+  --chart-grid: rgba(0, 0, 0, 0.07);
+  --chart-axis: rgba(0, 0, 0, 0.10);
+}
+
+.dark {
+  /* Dark theme */
+  --surface-base: #0A0A0A;
+  --surface-card: #111111;
+  --surface-elevated: #161616;
+  --surface-line: #1F1F1F;
+  --ink: #E5E7EB;
+  --ink-muted: #9CA3AF;
+  --ink-dim: #6B7280;
+  --ink-faint: #404040;
+  --heading-color: #FFFFFF;
+  --connector-stroke: rgba(255, 255, 255, 0.16);
+  --chart-grid: rgba(255, 255, 255, 0.04);
+  --chart-axis: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Base ────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-surface-base text-ink font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+  }
+  ::selection {
+    background: rgba(59, 130, 246, 0.25);
+  }
+}
+
+/* ─── Components ──────────────────────────────────────── */
+@layer components {
+  .card {
+    @apply bg-surface-card border border-black/[0.07] dark:border-white/[0.06] rounded-xl;
+  }
+
+  .hairline {
+    @apply border border-black/[0.07] dark:border-white/[0.06];
+  }
+
+  .dot-bg {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: 0 0;
+  }
+
+  .dark .dot-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  }
+
+  .dot-bg-fade {
+    -webkit-mask-image: linear-gradient(180deg, black 0%, black 50%, transparent 100%);
+    mask-image: linear-gradient(180deg, black 0%, black 50%, transparent 100%);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-md
+           bg-brand-500 hover:bg-brand-600 text-white font-medium text-[13px]
+           transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-brand-400/40 focus:ring-offset-2 focus:ring-offset-surface-base;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-md
+           bg-transparent hover:bg-black/[0.04] dark:hover:bg-white/[0.04]
+           border border-black/[0.10] dark:border-white/[0.08]
+           hover:border-black/[0.16] dark:hover:border-white/[0.14]
+           text-ink-muted hover:text-ink font-medium text-[13px] transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-muted hover:text-ink transition-colors;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md
+           bg-black/[0.04] dark:bg-white/[0.03]
+           border border-black/[0.06] dark:border-white/[0.06]
+           text-ink-muted text-[11px] font-medium font-mono;
+  }
+
+  .section {
+    @apply max-w-6xl mx-auto px-6 py-20;
+  }
+
+  .section-eyebrow {
+    @apply inline-block text-[11px] font-mono tracking-[0.12em] uppercase text-brand-500 dark:text-brand-400 mb-3;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+  }
+
+  .dark .gradient-text {
+    background-image: linear-gradient(135deg, #60A5FA 0%, #22D3EE 100%);
+  }
+
+  .section-title {
+    @apply text-[28px] sm:text-[32px] font-semibold tracking-[-0.01em] mb-2 leading-tight;
+    color: var(--heading-color);
+  }
+
+  .section-subtitle {
+    @apply text-ink-muted text-[15px] max-w-xl leading-relaxed;
+  }
+}
+
+/* ─── Utilities ───────────────────────────────────────── */
+@layer utilities {
+  .scroll-mt-nav {
+    scroll-margin-top: 72px;
+  }
+
+  .border-hair {
+    border-color: rgba(0, 0, 0, 0.07);
+  }
+  .dark .border-hair {
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+}
