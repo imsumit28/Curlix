@@ -172,7 +172,7 @@ export default function HeroShortener() {
             </button>
           ) : (
             <div className="flex items-center gap-2 animate-fade-in">
-              <span className="text-[12px] font-mono text-ink-dim shrink-0 select-none">curlix.app/</span>
+              <span className="text-[12px] font-mono text-ink-dim shrink-0 select-none">curlix.vercel.app/</span>
               <input
                 type="text"
                 value={customSlug}
@@ -186,7 +186,7 @@ export default function HeroShortener() {
               />
               {customSlug && (
                 <span className="text-[11px] font-mono text-brand-400 truncate max-w-[130px] shrink-0">
-                  ✓ curlix.app/{customSlug}
+                  ✓ curlix.vercel.app/{customSlug}
                 </span>
               )}
               <button
@@ -449,7 +449,7 @@ function LivePreview() {
             className="flex items-center gap-2 px-3 py-1.5 border-b last:border-b-0 border-black/[0.04] dark:border-white/[0.03] animate-fade-in"
           >
             <span className="text-[10px] font-mono text-accent-green shrink-0">→</span>
-            <span className="text-[11px] font-mono text-ink flex-1 truncate">curlix.app/{ev.code}</span>
+            <span className="text-[11px] font-mono text-ink flex-1 truncate">curlix.vercel.app/{ev.code}</span>
             <span className="text-[10px] font-mono text-ink-faint shrink-0 w-6 text-right">{ev.country}</span>
             <span className="text-[10px] font-mono text-accent-amber shrink-0 tabular-nums w-8 text-right">{ev.ms}ms</span>
           </div>
