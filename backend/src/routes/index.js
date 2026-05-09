@@ -15,7 +15,7 @@ router.get('/health/ready', health);
 
 // API routes
 router.post('/api/shorten', createLimiter, captchaMiddleware, shorten);
-router.get('/api/analytics/:code', analytics);
+router.get('/api/analytics/:code', createLimiter, analytics);
 router.delete('/api/links/:code', mutateLimiter, deleteLink);
 router.patch('/api/links/:code', mutateLimiter, updateLink);
 

@@ -39,10 +39,6 @@ const worker = new Worker(
   }
 );
 
-worker.on('completed', (job) => {
-  console.log(`Analytics job ${job.id} completed`);
-});
-
 worker.on('failed', (job, err) => {
   console.error(`Analytics job ${job?.id} failed:`, err.message);
 });
@@ -50,5 +46,3 @@ worker.on('failed', (job, err) => {
 worker.on('error', (err) => {
   console.error('Worker error:', err.message);
 });
-
-console.log('Analytics worker started');
