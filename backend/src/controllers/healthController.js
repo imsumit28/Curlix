@@ -1,6 +1,4 @@
 const db = require('../db/connection');
-const { getRedisClient } = require('../services/cacheService');
-const { getAnalyticsQueue } = require('../queues/analyticsQueue');
 
 const startedAt = Date.now();
 
@@ -26,40 +24,14 @@ async function checkPostgres() {
   );
 }
 
-async function checkRedis() {
-  return check(
-    (async () => {
-      const client = getRedisClient();
-      const pong = await client.ping();
-      return { reply: pong };
-    })()
-  );
-}
-
-async function checkQueue() {
-  return check(
-    (async () => {
-      const queue = getAnalyticsQueue();
-      const counts = await queue.getJobCounts('waiting', 'active', 'delayed', 'failed', 'completed');
-      return { jobs: counts };
-    })()
-  );
-}
-
 async function health(req, res) {
-  const [postgres, redis, queue] = await Promise.all([
-    checkPostgres(),
-    checkRedis(),
-    checkQueue(),
-  ]);
+  const postgres = await checkPostgres();
 
-  const allOk = postgres.ok && redis.ok && queue.ok;
-
-  res.status(allOk ? 200 : 503).json({
-    status: allOk ? 'ok' : 'degraded',
+  res.status(postgres.ok ? 200 : 503).json({
+    status: postgres.ok ? 'ok' : 'degraded',
     uptimeSec: Math.floor((Date.now() - startedAt) / 1000),
     timestamp: new Date().toISOString(),
-    checks: { postgres, redis, queue },
+    checks: { postgres },
   });
 }
 

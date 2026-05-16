@@ -1,36 +1,29 @@
-const { Queue } = require('bullmq');
+const UAParser = require('ua-parser-js');
+const db = require('../db/connection');
 
-let analyticsQueue;
+function enqueueClickEvent(payload) {
+  setImmediate(async () => {
+    try {
+      const { urlId, referrer, userAgent, country, ipHash, clickedAt } = payload;
 
-function getAnalyticsQueue() {
-  if (!analyticsQueue) {
-    analyticsQueue = new Queue('analytics', {
-      connection: (() => {
-        if (process.env.REDIS_URL) {
-          const u = new URL(process.env.REDIS_URL);
-          return { host: u.hostname, port: Number(u.port) || 6379, password: decodeURIComponent(u.password), tls: { rejectUnauthorized: false }, maxRetriesPerRequest: null };
-        }
-        return { host: process.env.REDIS_HOST, port: parseInt(process.env.REDIS_PORT, 10) || 6379, password: process.env.REDIS_PASSWORD, tls: process.env.REDIS_TLS === 'true' ? { rejectUnauthorized: false } : undefined, maxRetriesPerRequest: null };
-      })(),
-      defaultJobOptions: {
-        attempts: 3,
-        backoff: { type: 'exponential', delay: 2000 },
-        removeOnComplete: { count: 100 },
-        removeOnFail: { count: 50 },
-      },
-    });
-  }
-  return analyticsQueue;
+      let deviceType = 'unknown';
+      if (userAgent) {
+        const parser = new UAParser(userAgent);
+        const device = parser.getDevice();
+        if (device.type === 'mobile') deviceType = 'mobile';
+        else if (device.type === 'tablet') deviceType = 'tablet';
+        else deviceType = 'desktop';
+      }
+
+      await db.query(
+        `INSERT INTO analytics (url_id, clicked_at, referrer, user_agent, device_type, country, ip_hash)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [urlId, clickedAt || new Date(), referrer || null, userAgent || null, deviceType, country || null, ipHash || null]
+      );
+    } catch (err) {
+      console.error('Analytics insert failed:', err.message);
+    }
+  });
 }
 
-async function enqueueClickEvent(payload) {
-  try {
-    const queue = getAnalyticsQueue();
-    await queue.add('click', payload, { jobId: undefined });
-  } catch (err) {
-    // never let queue errors break the redirect path
-    console.error('Failed to enqueue click event:', err.message);
-  }
-}
-
-module.exports = { getAnalyticsQueue, enqueueClickEvent };
+module.exports = { enqueueClickEvent };
